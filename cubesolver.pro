@@ -37,4 +37,4 @@ QT += multimedia
 QT += multimediawidgets
 QT += serialport
 
-LIBS += -L/usr/local/lib -lopencv_video -lopencv_core -lopencv_highgui -lopencv_videostab -lopencv_imgproc -lopencv_legacy -lopencv_videoio
+LIBS += -L/usr/local/lib -lopencv_video -lopencv_core -lopencv_highgui -lopencv_videostab -lopencv_imgproc -lopencv_legacy -lopencv_videoio -lopencv_ml
