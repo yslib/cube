@@ -7,6 +7,7 @@
 #include "CubeSolver.h"
 
 
+
 #define ABS(x) ((x)>0?(x):(-(x)))
 
 Cube2d::Cube2d(const QVector<Video *> videos,QWidget * parent /* = 0 */) :QWidget(parent)
@@ -54,11 +55,11 @@ Cube2d::Cube2d(const QVector<Video *> videos,QWidget * parent /* = 0 */) :QWidge
 
 	painter = new QPainter(this);
 
-	//file = new QFile("C:\\Users\\ysl\\color.txt");
-	//if (file->open(QIODevice::ReadWrite | QIODevice::Text) == false)
-	//{
-	//	QMessageBox::warning(this, tr("can not open file"), tr("can not open file"));
-	//}
+//	file = new QFile("color.txt");
+//	if (file->open(QIODevice::ReadWrite | QIODevice::Text) == false)
+//	{
+//		QMessageBox::warning(this, tr("can not open file"), tr("can not open file"));
+//	}
 
 	//cubeLabel->setGeometry(100, 100, 1500, 300);
 	videoComboBox = new QComboBox(this);
@@ -70,6 +71,8 @@ Cube2d::Cube2d(const QVector<Video *> videos,QWidget * parent /* = 0 */) :QWidge
 	videosDetectAreaArray.resize(4);
 	for (int i = 0; i < 6;i++)
 		areaTable.push_back(QRect((*FBLRUD)[i],(*FBLRUD)[i]+QPoint(FlatLenth,FlatLenth)));
+    
+    model = cv::ml::SVM::StatModel::load<cv::ml::SVM>("svm.xml");
 
 	/*²¼¾Ö*/
 	QHBoxLayout * hLayout = new QHBoxLayout(this);
@@ -197,16 +200,17 @@ void Cube2d::paintEvent(QPaintEvent * event)
 	//	rgbs.push_back(sRGB(255, 255, 255));
 
 	//textEdit->clear();
-	//QString colorVal;
+	QString colorVal;
 	int colorTag;
 	QColor color;
 	int r, g, b;
 	int h;
 	double s, v;
-	char colorrgb[4];
-	colorrgb[3] = '\0';
+	//char colorrgb[4];
+	//colorrgb[3] = '\0';
 	((MainWindow *)parentWidget())->setTextEditContent(tr(""));
-	//QTextStream in(file);
+    
+	QTextStream in(file);
 	for (int k = 0; k < 6; k++)
 	{
 		for (int i = 0; i < 3; i++)
@@ -222,14 +226,13 @@ void Cube2d::paintEvent(QPaintEvent * event)
 				faceColors[k * 9 + i * 3 + j] = colorTag;
 				int leftTopX= FBLRUD->operator[](k).x();
 				int leftTopY = FBLRUD->operator[](k).y();
-				colorrgb[0] = r; colorrgb[1] = g; colorrgb[2] = b;
-				QString colorVal(colorrgb);
+				//colorrgb[0] = r; colorrgb[1] = g; colorrgb[2] = b;
+				//QString colorVal(colorrgb);
 				((MainWindow *)parentWidget())->sendData(colorVal);
 				//in << tr("%1 %2 %3 %4 %5 %6\n").arg(rgbs[k * 9 + i * 3 + j].r).arg(rgbs[k * 9 + i * 3 + j].g).arg(rgbs[k * 9 + i * 3 + j].b).arg(h).arg(s).arg(v);
 				//in << tr("%1%2%3").arg((char)r).arg((char)g).arg((char)b);
-				//colorVal += QString(tr("%1 %2 %3\r\n").arg(h).arg(s).arg(v));
-				if(k==0)
-				((MainWindow *)parentWidget())->appendTextEditContent(tr("(%1,%2,%3)").arg(h).arg(s).arg(v));
+//                if(r != 0 && g!= 0 && b != 0)
+//				colorVal += QString(tr("%1 %2 %3 1\r\n").arg((int)r).arg((int)g).arg((int)b));
 				painter->begin(this);
 				painter->setPen(color);
 				painter->setBrush(color);
@@ -242,6 +245,7 @@ void Cube2d::paintEvent(QPaintEvent * event)
 			}
 		}
 	}
+    //in << colorVal;
 }
 QColor threshold(int h, double s, double v, int &ColorTag)
 {

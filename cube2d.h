@@ -4,6 +4,10 @@
 #include "video.h"
 #include <set>
 #include "CubeSolver.h"
+#include <opencv2/opencv.hpp>
+#include <opencv2/ml.hpp>
+#include <opencv2/imgproc.hpp>
+
 void bgr2hsv(uchar  b, uchar a, uchar r, int & h, double &s, double &v);
 QColor thresholdRGB(int r, int b, int g, int & ColorTag);
 QColor  threshold(int n, double s, double v, int &ColorTag);
@@ -92,10 +96,15 @@ private:
 	QVector<Video *> videos;
 
 	std::vector<int> faceColors;
+    
+    cv::Ptr<cv::ml::SVM> model;
 	
 	float margin;
 
 	void updateEdgeStyle(int areaIndex,int videoIndex,int style);
+    
+    
+    
 
 public slots:
 
@@ -106,6 +115,7 @@ public slots:
 protected:
 
 	void mousePressEvent(QMouseEvent *event);
+    
 };
 
 
